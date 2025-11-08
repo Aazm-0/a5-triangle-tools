@@ -18,6 +18,8 @@
 
 package triangle;
 
+import com.sampullara.cli.Args;
+import com.sampullara.cli.Argument;
 import triangle.abstractSyntaxTrees.Program;
 import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
@@ -33,11 +35,16 @@ import triangle.treeDrawer.Drawer;
  */
 public class Compiler {
 
-	/** The filename for the object program, normally obj.tam. */
-	static String objectName = "obj.tam";
-	
-	static boolean showTree = false;
-	static boolean folding = false;
+    /** The Cli parser library to specify arguments with correct annotations */
+	/** The filename for the output object program, default obj.tam. */
+    @Argument(alias = "o",description = "The output file name")
+	private static String objectName = "obj.tam";
+    @Argument(alias = "t",description = "Toggle for showing tree or not")
+	private static boolean showTree = false;
+    @Argument(alias = "f",description = "Toggle for implementing toggle or not")
+	private static boolean folding = false;
+    @Argument(alias = "i",description = "Input File Path",required = true)
+    private static String sourceName;
 
 	private static Scanner scanner;
 	private static Parser parser;
@@ -122,14 +129,19 @@ public class Compiler {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length < 1) {
-			System.out.println("Usage: tc filename [-o=outputfilename] [tree] [folding]");
-			System.exit(1);
-		}
-		
-		parseArgs(args);
+        /**
+         * Since source Name path is configured to an argument
+         *  The libraries validation checks will work on them
+        */
 
-		String sourceName = args[0];
+//		if (args.length < 1) {
+//			System.out.println("Usage: tc filename [-o=outputfilename] [tree] [folding]");
+//			System.exit(1);
+//		}
+
+        Args.parseOrExit(Compiler.class,args);
+
+//		String sourceName = args[0];
 		
 		var compiledOK = compileProgram(sourceName, objectName, showTree, false);
 
@@ -138,16 +150,16 @@ public class Compiler {
 		}
 	}
 	
-	private static void parseArgs(String[] args) {
-		for (String s : args) {
-			var sl = s.toLowerCase();
-			if (sl.equals("tree")) {
-				showTree = true;
-			} else if (sl.startsWith("-o=")) {
-				objectName = s.substring(3);
-			} else if (sl.equals("folding")) {
-				folding = true;
-			}
-		}
-	}
+//	private static void parseArgs(String[] args) {
+//		for (String s : args) {
+//			var sl = s.toLowerCase();
+//			if (sl.equals("tree")) {
+//				showTree = true;
+//			} else if (sl.startsWith("-o=")) {
+//				objectName = s.substring(3);
+//			} else if (sl.equals("folding")) {
+//				folding = true;
+//			}
+//		}
+//	}
 }
