@@ -288,13 +288,29 @@ public class  Parser {
 				finish(commandPos);
 				commandAST = new CallCommand(iAST, apsAST, commandPos);
 
-			} else {
+			}
+            else {
 
 				Vname vAST = parseRestOfVname(iAST);
-				accept(Token.Kind.BECOMES);
-				Expression eAST = parseExpression();
-				finish(commandPos);
-				commandAST = new AssignCommand(vAST, eAST, commandPos);
+                if (currentToken.kind == Token.Kind.OPERATOR && currentToken.spelling.equals("**")){
+                    acceptIt();
+                    // Handles the custom exponent operator '**'.
+                    // Instead of parsing a full exponent expression, this case directly builds
+                    // the AST that represents squaring the variable on the left-hand side.
+                    // The operator '**' is therefore treated as:      vAST := vAST * 2
+                    IntegerLiteral il = new IntegerLiteral("2", commandPos);
+                    IntegerExpression ie = new IntegerExpression(il, commandPos);
+                    VnameExpression vne = new VnameExpression(vAST, commandPos);
+                    Operator op = new Operator("*",commandPos);
+                    Expression eAst = new BinaryExpression(vne,op,ie,commandPos);
+                    finish(commandPos);
+                    commandAST = new AssignCommand(vAST, eAst, commandPos);
+                } else {
+                    accept(Token.Kind.BECOMES);
+                    Expression eAST = parseExpression();
+                    finish(commandPos);
+                    commandAST = new AssignCommand(vAST, eAST, commandPos);
+                }
 			}
 		}
 			break;
