@@ -86,7 +86,7 @@ import triangle.abstractSyntaxTrees.vnames.SimpleVname;
 import triangle.abstractSyntaxTrees.vnames.SubscriptVname;
 import triangle.abstractSyntaxTrees.vnames.Vname;
 
-public class Parser {
+public class  Parser {
 
 	private Scanner lexicalAnalyser;
 	private ErrorReporter errorReporter;

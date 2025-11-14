@@ -1,20 +1,32 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+}
 
 java {
     sourceCompatibility = 21
 }
 
 subprojects.each { subproject ->
-  evaluationDependsOn(subproject.path)
+    evaluationDependsOn(subproject.path)
 }
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+
+    manifest {
+        attributes('Main-Class': 'triangle.Compiler')
     }
 
+    dependsOn subprojects.build
 
-  from subprojects.sourceSets.main.output
+
+    from subprojects.collect { subproject ->
+        subproject.sourceSets.main.output
+    }
+
+    from subprojects.collect { subproject ->
+        subproject.configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }.flatten()
 }
