@@ -77,8 +77,21 @@ public class TestScanner {
 	public void testRepeatUntil() {
 		compileExpectFailure("/repeatuntil.tri");
 	}
-	
-	
+
+    @Test
+    public void testPostFixBasic() {
+        compileExpectSuccess("/double.tri");
+    }
+
+    @Test
+    public void testPostFixConstantError() {
+        compileExpectFailure("/double-constant-error.tri");
+    }
+
+    @Test
+    public void testPostFixMultipleOperators() {
+        compileExpectFailure("/double-multiple-postfix-error.tri");
+    }
 	
 	private void compileExpectSuccess(String filename) {
 		// build.gradle has a line sourceSets.test.resources.srcDir file("$rootDir/programs")

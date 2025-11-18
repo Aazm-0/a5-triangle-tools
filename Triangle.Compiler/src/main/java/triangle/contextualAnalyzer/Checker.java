@@ -33,13 +33,7 @@ import triangle.abstractSyntaxTrees.aggregates.MultipleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.MultipleRecordAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleRecordAggregate;
-import triangle.abstractSyntaxTrees.commands.AssignCommand;
-import triangle.abstractSyntaxTrees.commands.CallCommand;
-import triangle.abstractSyntaxTrees.commands.EmptyCommand;
-import triangle.abstractSyntaxTrees.commands.IfCommand;
-import triangle.abstractSyntaxTrees.commands.LetCommand;
-import triangle.abstractSyntaxTrees.commands.SequentialCommand;
-import triangle.abstractSyntaxTrees.commands.WhileCommand;
+import triangle.abstractSyntaxTrees.commands.*;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
 import triangle.abstractSyntaxTrees.declarations.ConstDeclaration;
 import triangle.abstractSyntaxTrees.declarations.ConstantDeclaration;
@@ -121,6 +115,7 @@ public final class Checker implements ActualParameterVisitor<FormalParameter, Vo
 
 	// Always returns null. Does not use the given object.
 
+
 	@Override
 	public Void visitAssignCommand(AssignCommand ast, Void arg) {
 		var vType = ast.V.visit(this);
@@ -188,7 +183,20 @@ public final class Checker implements ActualParameterVisitor<FormalParameter, Vo
 		return null;
 	}
 
-	// Expressions
+    @Override
+    public Void visitPostFixCommand(PostFixCommand ast, Void arg) {
+        // Check1: If it is also a variable not a constant so its writable seems unnecessary cause in syntax analysis we mentioned it is writable
+        // Check2: Is it an integer
+        var vType = ast.v.visit(this);
+        if(!ast.v.variable){
+            reportError("The node identified isnt a variable", ast.v);
+        }
+
+        checkAndReportError(vType.equals(StdEnvironment.integerType), "Integer variable expected here", ast.v);
+        return null;
+    }
+
+    // Expressions
 
 	// Returns the TypeDenoter denoting the type of the expression. Does
 	// not use the given object.

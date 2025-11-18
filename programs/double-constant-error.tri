@@ -1,0 +1,4 @@
+let
+  const c : Integer := 7
+in
+  c**

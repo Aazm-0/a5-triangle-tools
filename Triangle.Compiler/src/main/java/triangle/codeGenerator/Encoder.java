@@ -37,13 +37,7 @@ import triangle.abstractSyntaxTrees.aggregates.MultipleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.MultipleRecordAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleRecordAggregate;
-import triangle.abstractSyntaxTrees.commands.AssignCommand;
-import triangle.abstractSyntaxTrees.commands.CallCommand;
-import triangle.abstractSyntaxTrees.commands.EmptyCommand;
-import triangle.abstractSyntaxTrees.commands.IfCommand;
-import triangle.abstractSyntaxTrees.commands.LetCommand;
-import triangle.abstractSyntaxTrees.commands.SequentialCommand;
-import triangle.abstractSyntaxTrees.commands.WhileCommand;
+import triangle.abstractSyntaxTrees.commands.*;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
 import triangle.abstractSyntaxTrees.declarations.ConstDeclaration;
 import triangle.abstractSyntaxTrees.declarations.Declaration;
@@ -185,7 +179,20 @@ public final class Encoder implements ActualParameterVisitor<Frame, Integer>,
 		return null;
 	}
 
-	// Expressions
+    @Override
+    public Void visitPostFixCommand(PostFixCommand ast, Frame frame) {
+        // Appending [value,operand2,Call Routine Mult] which transforms [updatedValue] which is stored into the variable
+        var valSize = StdEnvironment.integerType.visit(this);
+        encodeFetchAddress(ast.v,frame);
+        encodeFetch(ast.v, frame.expand(Machine.addressSize), valSize);
+        emitter.emit(OpCode.LOADL,2);
+        emitter.emit(OpCode.CALL,Register.PB,Primitive.MULT);
+        encodeStore(ast.v, frame.expand(valSize), valSize);
+
+        return null;
+    }
+
+    // Expressions
 	@Override
 	public Integer visitArrayExpression(ArrayExpression ast, Frame frame) {
 		ast.type.visit(this, frame);

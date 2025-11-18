@@ -32,13 +32,7 @@ import triangle.abstractSyntaxTrees.aggregates.MultipleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.MultipleRecordAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleArrayAggregate;
 import triangle.abstractSyntaxTrees.aggregates.SingleRecordAggregate;
-import triangle.abstractSyntaxTrees.commands.AssignCommand;
-import triangle.abstractSyntaxTrees.commands.CallCommand;
-import triangle.abstractSyntaxTrees.commands.EmptyCommand;
-import triangle.abstractSyntaxTrees.commands.IfCommand;
-import triangle.abstractSyntaxTrees.commands.LetCommand;
-import triangle.abstractSyntaxTrees.commands.SequentialCommand;
-import triangle.abstractSyntaxTrees.commands.WhileCommand;
+import triangle.abstractSyntaxTrees.commands.*;
 import triangle.abstractSyntaxTrees.declarations.BinaryOperatorDeclaration;
 import triangle.abstractSyntaxTrees.declarations.ConstDeclaration;
 import triangle.abstractSyntaxTrees.declarations.FuncDeclaration;
@@ -163,7 +157,16 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 		return layoutBinary("WhileCom.", d1, d2);
 	}
 
-	// Expressions
+    @Override
+    public DrawingTree visitPostFixCommand(PostFixCommand ast, Void unused) {
+        // Drawing pattern for the post fix operator which makes use of already defined drawing patterns
+        // Only adds PostFix new drawing implementation
+        var d1 = ast.v.visit(this);
+        var d2 = ast.postfixOp.visit(this);
+        return layoutBinary("PostFixCom.", d1, d2);
+    }
+
+    // Expressions
 	@Override
 	public DrawingTree visitArrayExpression(ArrayExpression ast, Void obj) {
 		var d1 = ast.AA.visit(this);
