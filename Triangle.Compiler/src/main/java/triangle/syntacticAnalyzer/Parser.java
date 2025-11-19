@@ -269,7 +269,8 @@ public class  Parser {
 
 		SourcePosition commandPos = new SourcePosition();
 		start(commandPos);
-
+        // Check for recognizing the begin token as i dont see it in the scanner
+        System.out.println("DEBUG Parser - Current token: " + currentToken.kind + " spelling: '" + currentToken.spelling + "'");
 		switch (currentToken.kind) {
 
 		case IDENTIFIER: {
@@ -302,6 +303,12 @@ public class  Parser {
 			commandAST = parseCommand();
 			accept(Token.Kind.END);
 			break;
+
+        case LCURLY:
+            acceptIt();
+            commandAST = parseCommand();
+            accept(Token.Kind.RCURLY);
+            break;
 
 		case LET: {
 			acceptIt();
@@ -353,6 +360,7 @@ public class  Parser {
 		case ELSE:
 		case IN:
 		case EOT:
+        case RCURLY:
 
 			finish(commandPos);
 			commandAST = new EmptyCommand(commandPos);
