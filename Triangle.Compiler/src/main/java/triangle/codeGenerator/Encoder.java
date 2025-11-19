@@ -192,6 +192,22 @@ public final class Encoder implements ActualParameterVisitor<Frame, Integer>,
         return null;
     }
 
+    @Override
+    public Void visitDoWhileCommand(DoWhileCommand ast, Frame frame) {
+        // Two addresses noted beginning of loop and ending of loop
+        // The jump-if doesn't know initial jump to address thus placeholder 0
+        // patched with correct address after first run
+
+        int loopBegin = emitter.getNextInstrAddr();
+        ast.C1.visit(this, frame);
+        ast.E.visit(this, frame);
+        int jumpToEnd = emitter.emit(OpCode.JUMPIF, Machine.falseRep, Register.CB, 0);
+        ast.C2.visit(this, frame);
+        emitter.emit(OpCode.JUMP,0,Register.CB,loopBegin);
+        emitter.patch(jumpToEnd);
+        return null;
+    }
+
     // Expressions
 	@Override
 	public Integer visitArrayExpression(ArrayExpression ast, Frame frame) {
@@ -570,7 +586,7 @@ public final class Encoder implements ActualParameterVisitor<Frame, Integer>,
 		if (frame == null) { // in this case, we're just using the frame to wrap up the size
 			frame = Frame.Initial;
 		}
-		
+
 		var offset = frame.getSize();
 		int fieldSize;
 		if (ast.entity == null) {
@@ -718,9 +734,9 @@ public final class Encoder implements ActualParameterVisitor<Frame, Integer>,
 
 	/**
 	 * in the following we associate the primitive routines (Primitive.*)
-	 * and the primitive types (Machine.*) in the abstract machine with 
-	 * the relevant std env declarations. 
-	 * The primitive routines are listed in Table C3 (P411) of the PLPJ book, 
+	 * and the primitive types (Machine.*) in the abstract machine with
+	 * the relevant std env declarations.
+	 * The primitive routines are listed in Table C3 (P411) of the PLPJ book,
 	 * and Table 3 of the Triangle guide
 	 */
 	private final void elaborateStdEnvironment() {

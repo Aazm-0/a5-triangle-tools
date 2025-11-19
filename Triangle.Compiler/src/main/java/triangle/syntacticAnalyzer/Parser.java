@@ -335,6 +335,19 @@ public class  Parser {
 		}
 			break;
 
+        // If Do token met first it recognizes it as Do-Wile-Do
+        // No conflicts as no simple do-while implementation
+       case DO: {
+           acceptIt();
+           Command cAST = parseSingleCommand();
+           accept(Token.Kind.WHILE);
+           Expression eAST = parseExpression();
+           accept(Token.Kind.DO);
+           Command cAST2 = parseSingleCommand();
+           commandAST = new DoWhileCommand(cAST, eAST, cAST2, commandPos);
+       }
+       break;
+
 		case SEMICOLON:
 		case END:
 		case ELSE:
