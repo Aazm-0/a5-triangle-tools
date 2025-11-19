@@ -198,7 +198,8 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 
 	@Override
 	public DrawingTree visitCharacterExpression(CharacterExpression ast, Void obj) {
-		var d1 = ast.CL.visit(this);
+        //System.out.println("DRAWING CharacterExpression: " + ast.CL.spelling);
+        var d1 = ast.CL.visit(this);
 		return layoutUnary("Char.Expr.", d1);
 	}
 
@@ -217,6 +218,7 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 
 	@Override
 	public DrawingTree visitIntegerExpression(IntegerExpression ast, Void obj) {
+        //System.out.println("DRAWING IntegerExpression: " + ast.IL.spelling);
 		var d1 = ast.IL.visit(this);
 		return layoutUnary("Int.Expr.", d1);
 	}

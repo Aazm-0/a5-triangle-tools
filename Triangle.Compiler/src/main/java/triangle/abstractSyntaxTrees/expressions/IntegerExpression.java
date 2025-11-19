@@ -30,7 +30,9 @@ public class IntegerExpression extends Expression {
 	}
 
 	public <TArg, TResult> TResult visit(ExpressionVisitor<TArg, TResult> v, TArg arg) {
-		return v.visitIntegerExpression(this, arg);
+        // i want to run the other visitor methods and count here so i find out if i missed some walk paths for my visitor
+        //System.out.println("VISITING IntegerLiteral: ");
+        return v.visitIntegerExpression(this, arg);
 	}
 
 	public final IntegerLiteral IL;

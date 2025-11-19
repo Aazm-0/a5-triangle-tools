@@ -30,7 +30,8 @@ public class CharacterExpression extends Expression {
 	}
 
 	public <TArg, TResult> TResult visit(ExpressionVisitor<TArg, TResult> v, TArg arg) {
-		return v.visitCharacterExpression(this, arg);
+        //System.out.println("VISITING CharacterLiteral ");
+        return v.visitCharacterExpression(this, arg);
 	}
 
 	public final CharacterLiteral CL;

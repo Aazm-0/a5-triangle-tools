@@ -24,6 +24,7 @@ import triangle.abstractSyntaxTrees.Program;
 import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
 import triangle.contextualAnalyzer.Checker;
+import triangle.expressionCounter.ExpressionCounter;
 import triangle.optimiser.ConstantFolder;
 import triangle.syntacticAnalyzer.Parser;
 import triangle.syntacticAnalyzer.Scanner;
@@ -47,6 +48,8 @@ public class Compiler {
     private  static  boolean showTreeAfter = false;
     @Argument(alias = "i",description = "Input File Path",required = true)
     private static String sourceName;
+    @Argument(alias = "c",description = "Integer and char literal count")
+    private  static  boolean showLiteralCount = false;
 
     private static Scanner scanner;
     private static Parser parser;
@@ -55,6 +58,7 @@ public class Compiler {
     private static Emitter emitter;
     private static ErrorReporter reporter;
     private static Drawer drawer;
+    private static ExpressionCounter expressionCounter;
 
     /** The AST representing the source program. */
     private static Program theAST;
@@ -72,7 +76,7 @@ public class Compiler {
      * @return true iff the source program is free of compile-time errors, otherwise
      *         false.
      */
-    static boolean compileProgram(String sourceName, String objectName, boolean showingAST,boolean showingAfterAST, boolean showingTable) {
+    static boolean compileProgram(String sourceName, String objectName, boolean showingAST,boolean showingAfterAST,boolean showingLiteralCount, boolean showingTable) {
 
         System.out.println("********** " + "Triangle Compiler (Java Version 2.1)" + " **********");
 
@@ -91,6 +95,7 @@ public class Compiler {
         emitter = new Emitter(reporter);
         encoder = new Encoder(emitter, reporter);
         drawer = new Drawer();
+        expressionCounter = new ExpressionCounter();
 
         // scanner.enableDebugging();
         theAST = parser.parseProgram(); // 1st pass
@@ -103,6 +108,11 @@ public class Compiler {
 
             if (showingAST) {
                 drawer.draw(theAST);
+            }
+
+            if(showingLiteralCount){
+                theAST.visit(expressionCounter);
+                expressionCounter.printResults();
             }
 //            When we call drawer.draw before folding and after trees exact same folded state because the values changes for all references
 //            Implementation of deep copying: Creating a new instance from the original data stored in theAst
@@ -151,7 +161,7 @@ public class Compiler {
 
 //		String sourceName = args[0];
 
-        var compiledOK = compileProgram(sourceName, objectName, showTree,showTreeAfter, false);
+        var compiledOK = compileProgram(sourceName, objectName, showTree,showTreeAfter,showLiteralCount, false);
 
         if (!showTree  && !showTreeAfter) {
             System.exit(compiledOK ? 0 : 1);

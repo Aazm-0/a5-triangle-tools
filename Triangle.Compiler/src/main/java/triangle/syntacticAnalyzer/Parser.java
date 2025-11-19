@@ -269,8 +269,8 @@ public class  Parser {
 
 		SourcePosition commandPos = new SourcePosition();
 		start(commandPos);
-        // Check for recognizing the begin token as i dont see it in the scanner
-        System.out.println("DEBUG Parser - Current token: " + currentToken.kind + " spelling: '" + currentToken.spelling + "'");
+        // Check for recognizing the begin token as i dont see it in the scanner its formatted later in token i see
+        //System.out.println("DEBUG Parser - Current token: " + currentToken.kind + " spelling: '" + currentToken.spelling + "'");
 		switch (currentToken.kind) {
 
 		case IDENTIFIER: {
