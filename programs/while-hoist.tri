@@ -1,0 +1,30 @@
+! should print:
+! aaaaa
+! 5
+! 4
+! 2
+
+let
+  var a : Integer;
+  var b : Integer;
+  var c : Integer
+in
+begin
+  a := 0;
+  b := 1;
+  c := 2;
+  while a < 1000 do
+  begin
+    put('a');
+    a := a + 1;
+    b := c + 2 * c * 4 + c; ! this could be hoisted
+  end;
+
+  puteol();
+  putint(a);
+  puteol();
+  putint(b);
+  puteol();
+  putint(c);
+  puteol();
+end

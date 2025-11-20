@@ -25,6 +25,7 @@ import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
 import triangle.contextualAnalyzer.Checker;
 import triangle.expressionCounter.ExpressionCounter;
+import triangle.loopInvariantMover.LoopInvariantMover;
 import triangle.optimiser.ConstantFolder;
 import triangle.syntacticAnalyzer.Parser;
 import triangle.syntacticAnalyzer.Scanner;
@@ -50,6 +51,8 @@ public class Compiler {
     private static String sourceName;
     @Argument(alias = "c",description = "Integer and char literal count")
     private  static  boolean showLiteralCount = false;
+    @Argument(alias = "h",description = "Optimization movement of invariants out of loops")
+    private  static  boolean hoisting = false;
 
     private static Scanner scanner;
     private static Parser parser;
@@ -76,7 +79,12 @@ public class Compiler {
      * @return true iff the source program is free of compile-time errors, otherwise
      *         false.
      */
-    static boolean compileProgram(String sourceName, String objectName, boolean showingAST,boolean showingAfterAST,boolean showingLiteralCount, boolean showingTable) {
+    static boolean compileProgram(String sourceName,
+                                  String objectName,
+                                  boolean showingAST,
+                                  boolean showingAfterAST,
+                                  boolean showingLiteralCount,
+                                  boolean showingTable) {
 
         System.out.println("********** " + "Triangle Compiler (Java Version 2.1)" + " **********");
 
@@ -116,9 +124,14 @@ public class Compiler {
             }
 //            When we call drawer.draw before folding and after trees exact same folded state because the values changes for all references
 //            Implementation of deep copying: Creating a new instance from the original data stored in theAst
+
             if (folding) {
                 theAST.visit(new ConstantFolder());
-                if (showingAfterAST){
+                if (hoisting) {
+                    theAST.visit(new LoopInvariantMover());
+
+                }
+                if (showingAfterAST) {
                     drawer.draw(theAST);
                 }
             }

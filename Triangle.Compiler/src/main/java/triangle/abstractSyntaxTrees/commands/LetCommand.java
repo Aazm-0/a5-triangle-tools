@@ -34,6 +34,6 @@ public class LetCommand extends Command {
 		return v.visitLetCommand(this, arg);
 	}
 
-	public final Declaration D;
-	public final Command C;
+	public Declaration D;
+	public Command C;
 }
