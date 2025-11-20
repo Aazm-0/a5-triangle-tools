@@ -1,0 +1,35 @@
+let
+    var b: Boolean
+in
+begin
+    b := 1 < 3;
+
+    if b
+    then put('t')
+    else put('f');
+
+   	puteol();
+
+    b := 1 > 3;
+
+    if b
+    then put('t')
+    else put('f');
+
+   	puteol();
+
+    b := 2 >= 1;
+
+	if b
+    then put('t')
+    else put('f');
+
+   	puteol();
+
+    b := 2 < 1;
+
+	if b
+    then put('t')
+    else put('f');
+
+end
